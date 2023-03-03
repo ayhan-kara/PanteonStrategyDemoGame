@@ -1,26 +1,66 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class ObjectDrag : MonoBehaviour
 {
-    private Vector3 offset;
+    private MeshRenderer meshRenderer;
+    private PlaceableObject placeableObject;
 
+
+    private void Start()
+    {
+        meshRenderer = GetComponent<MeshRenderer>();
+        placeableObject = GetComponent<PlaceableObject>();
+    }
 
     private void OnMouseDown()
     {
-        offset = transform.position - BuildingSystem.MousePosition();
+        if (placeableObject.CompareTag("Builded") && !placeableObject.isSelected)
+        {
+            placeableObject.panel.SetActive(true);
+            InformationManager.instance.OpenBarrackInformationPanel();
+            placeableObject.isSelected = true;
+        }
     }
 
     private void OnMouseDrag()
     {
-        //Vector3 position = BuildingSystem.MouseWorldPosition() + offset;
+        if (placeableObject.isSelected)
+        {
+            MoveBuild();
+            CheckArea();
+        }
+    }
+
+    public void MoveBuild()
+    {
         Vector3 position = BuildingSystem.MousePosition();
         transform.position = BuildingSystem.instance.SnapCoordinateToGrid(position);
+    }
 
-        if (Mathf.Abs(transform.position.x) > BuildingSystem.instance.width - .5f  || Mathf.Abs(transform.position.z) > BuildingSystem.instance.height - .5f)
+    public void CheckArea()
+    {
+        var material = meshRenderer.material;
+
+        var buildButton = placeableObject.buildButton;
+        var unBuildButton = placeableObject.unBuildButton;
+
+        if (Mathf.Abs(transform.position.x) > BuildingSystem.instance.width - .5f || Mathf.Abs(transform.position.z) > BuildingSystem.instance.height - .5f || placeableObject.isTouchedAnything)
         {
-            Debug.Log("111");
+            Debug.Log("Can't Build Here");
+            material.DOColor(Color.red, .25f);
+
+            buildButton.SetActive(false);
+            unBuildButton.SetActive(true);
+        }
+        else
+        {
+            material.DOColor(Color.white, .5f);
+
+            buildButton.SetActive(true);
+            unBuildButton.SetActive(false);
         }
     }
 }

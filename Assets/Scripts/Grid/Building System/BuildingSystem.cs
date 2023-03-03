@@ -28,41 +28,19 @@ public class BuildingSystem : MonoBehaviour
         instance = this;
         grid = gridLayout.GetComponent<Grid>();
 
+        if (placeableObject != null )
+        {
+            Debug.Log("1");
+        }
     }
     private void Start()
     {
         height = Camera.main.orthographicSize - 1f;
         width = Camera.main.aspect * height;
 
-        Debug.Log("Width: " + width + " " + "Height: " + height);
+        //Debug.Log("Width: " + width + " " + "Height: " + height);
 
         backGround.size = new Vector2(width * 2, height * 2);
-    }
-
-    private void Update()
-    {
-        //if(Input.GetKeyDown(KeyCode.Space)) 
-        //{
-        //    InitializeObject(barrackPrefab);
-        //}
-
-        //if(!placeableObject)
-        //{
-        //    return;
-        //}
-        //if (Input.GetKey(KeyCode.A))
-        //{
-        //    if (CanBePlacaed(placeableObject))
-        //    {
-        //        placeableObject.Place();
-        //        Vector3Int start = gridLayout.WorldToCell(placeableObject.GetStartPosition());
-        //        TakeArea(start, placeableObject.size);
-        //    }
-        //    else
-        //    {
-        //        Destroy(placeableObject.gameObject);
-        //    }
-        //}
     }
 
     public static Vector3 MousePosition()
@@ -97,8 +75,9 @@ public class BuildingSystem : MonoBehaviour
     public void FirstBuild()
     {
         Barrack barrack = GetBarrack();
-        barrack.gameObject.SetActive(true);
         placeableObject = barrack.GetComponent<PlaceableObject>();
+        barrack.gameObject.SetActive(true);
+        barrack.tag = "Selected";
         //InitializeObject(barrack.gameObject);
     }
 

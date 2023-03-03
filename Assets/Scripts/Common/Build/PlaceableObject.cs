@@ -5,10 +5,24 @@ using UnityEngine;
 public class PlaceableObject : MonoBehaviour
 {
     public bool placed {  get; private set; }
+    public bool isTouchedAnything = false;
+    public bool isSelected = true;
     public Vector3Int size { get; private set; }
     private Vector3[] vertices;
+    public GameObject buildButton, unBuildButton, panel;
 
-
+    private void Awake()
+    {
+        if (isTouchedAnything)
+        {
+            Debug.Break();
+        }
+    }
+    private void Start()
+    {
+        GetColliderVertex();
+        CalculateSizeInCells();
+    }
     private void GetColliderVertex()
     {
         BoxCollider collider = GetComponent<BoxCollider>();
@@ -37,22 +51,21 @@ public class PlaceableObject : MonoBehaviour
         return transform.TransformPoint(vertices[0]);
     }
 
-    private void Start()
-    {
-        GetColliderVertex();
-        CalculateSizeInCells();
-    }
 
     public virtual void Place()
     {
-        ObjectDrag drag = gameObject.GetComponent<ObjectDrag>();
-        Destroy(drag);
-
         placed = true;
     }
 
     public void Builded()
     {
         BuildingSystem.instance.Builded();
+        tag = "Builded";
+        isSelected = false;
+        if (InformationManager.instance.barrackInformationPanel.activeInHierarchy) 
+        {
+            Debug.Log("Close Panel");
+            InformationManager.instance.barrackInformationPanel.SetActive(false);
+        }
     }
 }

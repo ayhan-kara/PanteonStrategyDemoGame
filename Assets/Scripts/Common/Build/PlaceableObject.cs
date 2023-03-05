@@ -57,6 +57,18 @@ public class PlaceableObject : MonoBehaviour
         placed = true;
     }
 
+    public void SetTiles(Vector3Int start, Vector3Int size)
+    {
+        //only barrack size
+        for (int x = start.x; x < size.x - 2; x++)
+        {
+            for (int y = start.y; y < size.y - 2; y++)
+            {
+                Pathfinding.Instance.tilemap.SetTile(new Vector3Int(x, y), null);
+            }
+        }
+    }
+
     public void Builded()
     {
         BuildingSystem.instance.Builded();

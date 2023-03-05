@@ -22,19 +22,16 @@ public class BuildingSystem : MonoBehaviour
 
     public float width, height;
 
+    public List<Vector3Int> tiles;
 
     private void Awake()
     {
         instance = this;
         grid = gridLayout.GetComponent<Grid>();
-
-        if (placeableObject != null )
-        {
-            Debug.Log("1");
-        }
     }
     private void Start()
     {
+
         height = Camera.main.orthographicSize - 1f;
         width = Camera.main.aspect * height;
 
@@ -78,7 +75,6 @@ public class BuildingSystem : MonoBehaviour
         placeableObject = barrack.GetComponent<PlaceableObject>();
         barrack.gameObject.SetActive(true);
         barrack.tag = "Selected";
-        //InitializeObject(barrack.gameObject);
     }
 
     private Barrack GetBarrack()
@@ -96,21 +92,12 @@ public class BuildingSystem : MonoBehaviour
         {
             placeableObject.Place();
             Vector3Int start = gridLayout.WorldToCell(placeableObject.GetStartPosition());
-            TakeArea(start, placeableObject.size);
+            placeableObject.SetTiles(start, placeableObject.size);
         }
         else
         {
             Destroy(placeableObject.gameObject);
         }
-    }
-
-    public void InitializeObject(GameObject prefab) 
-    {
-        Vector3 position = SnapCoordinateToGrid(Vector3.zero);
-        //GameObject obj = Instantiate(prefab, position, Quaternion.identity);
-
-        //placeableObject = obj.GetComponent<PlaceableObject>();
-        //obj.AddComponent<ObjectDrag>();
     }
 
     private bool CanBePlacaed(PlaceableObject placeableObject)
@@ -130,10 +117,5 @@ public class BuildingSystem : MonoBehaviour
         }
 
         return true;
-    }
-
-    public void TakeArea(Vector3Int start, Vector3Int size)
-    {
-        MainTilemap.BoxFill(start, whiteTile, start.x, start.y, start.x + size.x, start.y + size.y);
     }
 }

@@ -16508,7 +16508,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tilemap: {fileID: 958234304}
   roadMap: {fileID: 1123164703}
-  roadTile: {fileID: 11400000, guid: 7e8c275f1ad020846ba23853b49bb4b2, type: 2}
+  roadTile: {fileID: 11400000, guid: b6417e7ef3bb966498ae7e081227ea0a, type: 2}
   start: {x: 0, y: 0}
 --- !u!4 &1632288019
 Transform:

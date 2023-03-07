@@ -92,7 +92,7 @@ public class BuildingSystem : MonoBehaviour
         {
             placeableObject.Place();
             Vector3Int start = gridLayout.WorldToCell(placeableObject.GetStartPosition());
-            placeableObject.SetTiles(start, placeableObject.size);
+            placeableObject.SetTiles(start);
         }
         else
         {

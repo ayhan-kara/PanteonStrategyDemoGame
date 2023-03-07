@@ -51,20 +51,32 @@ public class PlaceableObject : MonoBehaviour
         return transform.TransformPoint(vertices[0]);
     }
 
-
     public virtual void Place()
     {
         placed = true;
     }
 
-    public void SetTiles(Vector3Int start, Vector3Int size)
+    public void SetTiles(Vector3Int start)
     {
         //only barrack size
-        for (int x = start.x; x < size.x - 2; x++)
+        //int sx = start.x;
+        //int sy = start.y;
+        for (int x = start.x; x < (start.x + 4); x++)
         {
-            for (int y = start.y; y < size.y - 2; y++)
+            for (int y = start.y; y < (start.y + 4); y++)
             {
                 Pathfinding.Instance.tilemap.SetTile(new Vector3Int(x, y), null);
+            }
+        }
+    }
+
+    public void RemoveTiles(Vector3Int start)
+    {
+        for (int x = start.x; x < (start.x + 4); x++)
+        {
+            for (int y = start.y; y < (start.y + 4); y++)
+            {
+                Pathfinding.Instance.tilemap.SetTile(new Vector3Int(x, y), Pathfinding.Instance.roadTile);
             }
         }
     }

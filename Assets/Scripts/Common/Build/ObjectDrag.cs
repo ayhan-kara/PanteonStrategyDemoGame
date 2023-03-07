@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Unity.VisualScripting;
 
 public class ObjectDrag : MonoBehaviour
 {
@@ -22,6 +23,8 @@ public class ObjectDrag : MonoBehaviour
             placeableObject.panel.SetActive(true);
             InformationManager.instance.OpenBarrackInformationPanel();
             placeableObject.isSelected = true;
+            Vector3Int start = BuildingSystem.instance.gridLayout.WorldToCell(placeableObject.GetStartPosition());
+            placeableObject.RemoveTiles(start);
         }
     }
 

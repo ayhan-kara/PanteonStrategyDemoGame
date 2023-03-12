@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -7,23 +5,18 @@ public class BuildingSystem : MonoBehaviour
 {
     public static BuildingSystem instance;
 
+    private PlaceableObject placeableObject;
     public GridLayout gridLayout;
     private Grid grid;
+    public GameObject barrackPrefab;
     [SerializeField] private Tilemap MainTilemap;
     [SerializeField] private TileBase whiteTile;
-
-    public GameObject barrackPrefab;
-
-    private PlaceableObject placeableObject;
-
     [SerializeField] Pooler barrackPooler;
-
+    [SerializeField] Pooler powerPlantPooler;
     [SerializeField] SpriteRenderer backGround;
-
     public float width, height;
 
-    public List<Vector3Int> tiles;
-
+    #region Monobehaviour
     private void Awake()
     {
         instance = this;
@@ -31,19 +24,17 @@ public class BuildingSystem : MonoBehaviour
     }
     private void Start()
     {
-
         height = Camera.main.orthographicSize - 1f;
         width = Camera.main.aspect * height;
-
-        //Debug.Log("Width: " + width + " " + "Height: " + height);
-
         backGround.size = new Vector2(width * 2, height * 2);
     }
+
+    #endregion
+
 
     public static Vector3 MousePosition()
     {
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        //mousePosition.z = Camera.main.transform.position.z + Camera.main.nearClipPlane;
         return mousePosition;
     }
 
@@ -54,22 +45,8 @@ public class BuildingSystem : MonoBehaviour
         return position;
     }
 
-    private static TileBase[] GetTilesBlock(BoundsInt area, Tilemap tilemap)
-    {
-        TileBase[] array = new TileBase[area.size.x * area.size.y * area.size.z];
-        int count = 0;
-
-        foreach (var v in area.allPositionsWithin)
-        {
-            Vector3Int pos = new Vector3Int(v.x, v.y, 0);
-            array[count] = tilemap.GetTile(pos);
-            count++;
-        }
-
-        return array;
-    }
-
-    public void FirstBuild()
+    #region Get Buildings
+    public void FirstBarrackBuild()
     {
         Barrack barrack = GetBarrack();
         placeableObject = barrack.GetComponent<PlaceableObject>();
@@ -82,40 +59,23 @@ public class BuildingSystem : MonoBehaviour
         return barrackPooler.GetGo<Barrack>();
     }
 
-    public virtual void Builded()
+    public void FirstPowerPlantBuild()
     {
-        //if (!placeableObject)
-        //{
-        //    return;
-        //}
-        if (CanBePlacaed(placeableObject))
-        {
-            placeableObject.Place();
-            Vector3Int start = gridLayout.WorldToCell(placeableObject.GetStartPosition());
-            placeableObject.SetTiles(start);
-        }
-        else
-        {
-            Destroy(placeableObject.gameObject);
-        }
+        PowerPlant plant = GetPowerPlant();
+        placeableObject = plant.GetComponent<PlaceableObject>();
+        plant.gameObject.SetActive(true);
+        plant.tag = "Selected";
     }
 
-    private bool CanBePlacaed(PlaceableObject placeableObject)
+    private PowerPlant GetPowerPlant()
     {
-        BoundsInt area = new BoundsInt();
-        area.position = gridLayout.WorldToCell(placeableObject.GetStartPosition());
-        area.size = new Vector3Int(area.size.x + 1, area.size.y + 1, area.size.z);
+        return powerPlantPooler.GetGo<PowerPlant>();
+    }
 
-        TileBase[] baseArray = GetTilesBlock(area, MainTilemap);
+    #endregion
 
-        foreach (var b in baseArray)
-        {
-            if (b == whiteTile)
-            {
-                return false;
-            }
-        }
-
-        return true;
+    public virtual void Builded()
+    {
+        placeableObject.Place();
     }
 }

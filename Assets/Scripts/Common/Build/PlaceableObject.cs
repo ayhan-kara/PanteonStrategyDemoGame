@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlaceableObject : MonoBehaviour
@@ -8,16 +6,9 @@ public class PlaceableObject : MonoBehaviour
     public bool isTouchedAnything = false;
     public bool isSelected = true;
     public Vector3Int size { get; private set; }
-    private Vector3[] vertices;
-    public GameObject buildButton, unBuildButton, panel;
+    public Vector3[] vertices;
+    public GameObject buildButton, unBuildButton, panel, attackTarget;
 
-    private void Awake()
-    {
-        if (isTouchedAnything)
-        {
-            Debug.Break();
-        }
-    }
     private void Start()
     {
         GetColliderVertex();
@@ -56,36 +47,12 @@ public class PlaceableObject : MonoBehaviour
         placed = true;
     }
 
-    public void SetTiles(Vector3Int start)
-    {
-        //only barrack size
-        //int sx = start.x;
-        //int sy = start.y;
-        for (int x = start.x; x < (start.x + 4); x++)
-        {
-            for (int y = start.y; y < (start.y + 4); y++)
-            {
-                Pathfinding.Instance.tilemap.SetTile(new Vector3Int(x, y), null);
-            }
-        }
-    }
-
-    public void RemoveTiles(Vector3Int start)
-    {
-        for (int x = start.x; x < (start.x + 4); x++)
-        {
-            for (int y = start.y; y < (start.y + 4); y++)
-            {
-                Pathfinding.Instance.tilemap.SetTile(new Vector3Int(x, y), Pathfinding.Instance.roadTile);
-            }
-        }
-    }
-
     public void Builded()
     {
         BuildingSystem.instance.Builded();
         tag = "Builded";
         isSelected = false;
+        this.GetComponent<ObjectDrag>().isDrag = false;
         if (InformationManager.instance.barrackInformationPanel.activeInHierarchy) 
         {
             Debug.Log("Close Panel");
